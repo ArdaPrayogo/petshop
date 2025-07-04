@@ -14,15 +14,18 @@
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('pelanggan*') ? 'active' : '' }}" href="/pelanggan">Pelanggan</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pets</a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Service</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('pemesanan*') ? 'active' : '' }}" href="/pemesanan">Pemesanan</a>
+                    <a class="nav-link {{ Request::is('bookings*') ? 'active' : '' }}" href="/bookings">Pemesanan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ Request::is('transaksi*') ? 'active' : '' }}" href="/transaksi">Transaksi</a>
+                    <a class="nav-link {{ Request::is('bills*') ? 'active' : '' }}" href="/bills">Transaksi</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">

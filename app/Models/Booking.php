@@ -7,8 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $guarded = ['id'];
-    public function service()
+    public function pet()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Pet::class);
+    }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class);
     }
 }

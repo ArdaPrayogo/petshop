@@ -21,12 +21,15 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'duration' => 'nullable|integer|min:1', // durasi dalam menit
         ]);
 
+
         Service::create($request->all());
-        return redirect()->route('services.index')->with('success', 'Layanan berhasil ditambahkan!');
+        return redirect('/service')->with('success', 'Layanan berhasil ditambahkan!');
     }
 
     public function show(Service $service)
@@ -42,17 +45,20 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'duration' => 'nullable|integer|min:1', // durasi dalam menit
         ]);
 
+
         $service->update($request->all());
-        return redirect()->route('services.index')->with('success', 'Layanan berhasil diperbarui!');
+        return redirect('/service')->with('success', 'Layanan berhasil diperbarui!');
     }
 
     public function destroy(Service $service)
     {
         $service->delete();
-        return redirect()->route('services.index')->with('success', 'Layanan berhasil dihapus!');
+        return redirect('/service')->with('deleted', 'Layanan berhasil dihapus!');
     }
 }

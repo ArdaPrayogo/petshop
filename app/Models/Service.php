@@ -9,6 +9,6 @@ class Service extends Model
     protected $guarded = ['id'];
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->belongsToMany(Booking::class);
     }
 }
