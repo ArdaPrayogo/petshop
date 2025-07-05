@@ -3,7 +3,6 @@
 @section('container')
     <div class="container">
         <h2>Daftar Tagihan</h2>
-        <a href="{{ route('bills.create') }}" class="btn btn-primary mb-3">Tambah Tagihan</a>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -33,14 +32,31 @@
                         </td>
                         <td>Rp {{ number_format($bill->total_amount, 0, ',', '.') }}</td>
                         <td>{{ \Carbon\Carbon::parse($bill->bill_date)->format('d M Y') }}</td>
-                        <td>{{ ucfirst($bill->status) }}</td>
+                        <td>
+                            @php
+                                $badge = match ($bill->status) {
+                                    'unpaid' => 'warning',
+                                    'paid' => 'success',
+                                    'cancelled' => 'secondary',
+                                    default => 'light',
+                                };
+                            @endphp
+                            <span class="badge bg-{{ $badge }}">{{ ucfirst($bill->status) }}</span>
+                        </td>
                         <td>
                             <a href="{{ route('bills.show', $bill->id) }}" class="btn btn-info btn-sm">Lihat</a>
-                            <a href="{{ route('bills.edit', $bill->id) }}" class="btn btn-warning btn-sm">Edit</a>
+
+                            @if ($bill->status === 'unpaid')
+                                <a href="{{ route('bills.pay.form', $bill->id) }}" class="btn btn-success btn-sm">
+                                    Bayar
+                                </a>
+                            @endif
+
                             <form action="{{ route('bills.destroy', $bill->id) }}" method="POST" class="d-inline">
                                 @csrf @method('DELETE')
-                                <button onclick="return confirm('Yakin hapus?')"
-                                    class="btn btn-danger btn-sm">Hapus</button>
+                                <button onclick="return confirm('Yakin hapus tagihan ini?')" class="btn btn-danger btn-sm">
+                                    Hapus
+                                </button>
                             </form>
                         </td>
                     </tr>

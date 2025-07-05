@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('booking_id')->constrained()->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
-            $table->decimal('paid_amount', 10, 2)->nullable()->after('total_amount');
-            $table->decimal('change_amount', 10, 2)->nullable()->after('paid_amount');
+            $table->decimal('paid_amount', 10, 2)->nullable();
+            $table->decimal('change_amount', 10, 2)->nullable();
             $table->enum('status', ['unpaid', 'paid', 'cancelled'])->default('unpaid');
+            $table->enum('payment_method', ['cash', 'transfer', 'qris'])->nullable();
             $table->date('bill_date')->default(now());
             $table->timestamps();
         });

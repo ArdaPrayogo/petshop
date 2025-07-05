@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
+use App\Models\Bill;
 use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -42,13 +43,12 @@ class BookingController extends Controller
             'services' => 'required|array|min:1',
             'services.*' => 'exists:services,id',
             'schedule_time' => 'required|date',
-            'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);
 
         $booking = Booking::create([
             'pet_id' => $validated['pet_id'],
             'schedule_time' => $validated['schedule_time'],
-            'status' => $validated['status'],
+            'status' => 'pending',
         ]);
 
         // Simpan ke pivot table booking_service
@@ -71,15 +71,30 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking)
     {
-        $request->validate([
-            'pet_id'        => 'required|exists:pets,id',
-            'service_id'    => 'required|exists:services,id',
+        $validated = $request->validate([
             'schedule_time' => 'required|date',
-            'status'        => 'required|in:pending,confirmed,completed,cancelled',
+            'status' => 'required|in:pending,confirmed,completed,cancelled',
         ]);
 
-        $booking->update($request->all());
-        return redirect()->route('bookings.index')->with('success', 'Jadwal berhasil diperbarui.');
+        // Update status & jadwal
+        $booking->update([
+            'schedule_time' => $validated['schedule_time'],
+            'status' => $validated['status'],
+        ]);
+
+        // Jika status menjadi 'completed' dan belum ada tagihan
+        if ($validated['status'] === 'completed' && !$booking->bill) {
+            $total = $booking->services->sum('price');
+
+            Bill::create([
+                'booking_id' => $booking->id,
+                'total_amount' => $total,
+                'status' => 'unpaid',
+                'bill_date' => now(),
+            ]);
+        }
+
+        return redirect()->route('bookings.index')->with('success', 'Booking berhasil diperbarui.');
     }
 
     public function destroy(Booking $booking)

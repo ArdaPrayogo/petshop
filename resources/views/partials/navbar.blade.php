@@ -17,15 +17,28 @@
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pets</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}" href="/mypet">My Pet</a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Service</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">our
+                        service</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ Request::is('bookings*') ? 'active' : '' }}" href="/bookings">Pemesanan</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ Request::is('mybooking*') ? 'active' : '' }}" href="/mybooking">Pemesanan</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ Request::is('bills*') ? 'active' : '' }}" href="/bills">Transaksi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ Request::is('mybill*') ? 'active' : '' }}" href="/mybill">Transaksi Saya</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">

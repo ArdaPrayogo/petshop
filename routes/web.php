@@ -15,3 +15,6 @@ Route::resource('pelanggan', UserController::class);
 Route::resource('pets', PetController::class);
 Route::resource('bills', BillController::class);
 Route::resource('bookings', BookingController::class);
+
+Route::get('/bills/{bill}/pay', [BillController::class, 'payForm'])->name('bills.pay.form');
+Route::post('/bills/{bill}/pay', [BillController::class, 'processPayment'])->name('bills.pay.process');

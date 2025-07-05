@@ -52,17 +52,6 @@
                 <input type="datetime-local" name="schedule_time" class="form-control" required>
             </div>
 
-            {{-- Status --}}
-            <div class="mb-3">
-                <label for="status">Status</label>
-                <select name="status" class="form-select" required>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-            </div>
-
             <button class="btn btn-primary">Simpan</button>
             <a href="{{ route('bookings.index') }}" class="btn btn-secondary">Batal</a>
         </form>

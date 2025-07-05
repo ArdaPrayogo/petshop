@@ -98,4 +98,32 @@ class BillController extends Controller
         $bill->delete();
         return redirect()->route('bills.index')->with('success', 'Tagihan berhasil dihapus.');
     }
+
+    public function payForm(Bill $bill)
+    {
+        // Pastikan relasi pet & service sudah eager-loaded
+        $bill->load('booking.pet.user', 'booking.services');
+        return view('bills.create', compact('bill'));
+    }
+
+    public function processPayment(Request $request, Bill $bill)
+    {
+        $request->validate([
+            'paid_amount'    => 'required|numeric|min:' . $bill->total_amount,
+            'payment_method' => 'required|in:cash,transfer,qris',
+        ]);
+
+        $paid = $request->paid_amount;
+        $change = $paid - $bill->total_amount;
+
+        $bill->update([
+            'status'          => 'paid',
+            'paid_amount'     => $paid,
+            'change_amount'   => $change,
+            'payment_method'  => $request->payment_method,
+            'bill_date'       => now(), // just to update if needed
+        ]);
+
+        return redirect()->route('bills.index')->with('success', 'Pembayaran berhasil disimpan.');
+    }
 }
