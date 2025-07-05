@@ -7,39 +7,58 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" aria-current="page"
-                        href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('pelanggan*') ? 'active' : '' }}" href="/pelanggan">Pelanggan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}" href="/mypet">My Pet</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Service</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">our
-                        service</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('bookings*') ? 'active' : '' }}" href="/bookings">Pemesanan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mybooking*') ? 'active' : '' }}" href="/mybooking">Pemesanan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('bills*') ? 'active' : '' }}" href="/bills">Transaksi</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mybill*') ? 'active' : '' }}" href="/mybill">Transaksi Saya</a>
-                </li>
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" aria-current="page"
+                            href="/">Home</a>
+                    </li>
+                @endcan
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('pelanggan*') ? 'active' : '' }}" href="/pelanggan">Pelanggan</a>
+                    </li>
+                @endcan
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pets</a>
+                    </li>
+                @endcan
+                @can('customer')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}" href="/mypet">My Pet</a>
+                    </li>
+                @endcan
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Service</a>
+                    </li>
+                @endcan
+                @can('customer')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">our
+                            service</a>
+                    </li>
+                @endcan
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('bookings*') ? 'active' : '' }}" href="/bookings">Pemesanan</a>
+                    </li>
+                @endcan
+                @can('customer')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mybooking*') ? 'active' : '' }}" href="/mybooking">Pemesanan</a>
+                    </li>
+                @endcan
+                @can('admin')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('bills*') ? 'active' : '' }}" href="/bills">Transaksi</a>
+                    </li>
+                @endcan
+                @can('customer')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mybill*') ? 'active' : '' }}" href="/mybill">Transaksi Saya</a>
+                    </li>
+                @endcan
             </ul>
             <ul class="navbar-nav ms-auto">
                 @auth
@@ -48,6 +67,11 @@
                             aria-expanded="false">
                             Welcome back, {{ auth()->user()->name }}
                         </a>
+                        <form action="/logout" method="post">
+                            @csrf
+                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-in-right"></i>
+                                Logout</button>
+                        </form>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-layout-sidebar-reverse"></i> My
                                     dashboard</a></li>
