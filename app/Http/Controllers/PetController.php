@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PetController extends Controller
 {
@@ -14,10 +15,23 @@ class PetController extends Controller
         return view('pets.index', compact('pets'));
     }
 
+    public function indexcustomer()
+    {
+        $pets = Pet::with('user')
+            ->where('user_id', auth()->id()) // hanya milik user yang sedang login
+            ->get();
+
+        return view('customer.pets.index', compact('pets'));
+    }
+
     public function create()
     {
         $users = User::all();
         return view('pets.create', compact('users'));
+    }
+    public function createcustomer()
+    {
+        return view('customer.pets.create');
     }
 
     public function store(Request $request)
@@ -33,6 +47,24 @@ class PetController extends Controller
         Pet::create($request->all());
         return redirect()->route('pets.index')->with('success', 'Hewan berhasil ditambahkan.');
     }
+
+    public function storecustomer(Request $request)
+    {
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'species' => 'required|string|max:255',
+            'breed'   => 'nullable|string|max:255',
+            'age'     => 'nullable|integer|min:0',
+        ]);
+
+        // Tambahkan user_id dari user yang login
+        $validated['user_id'] = Auth::id();
+
+        Pet::create($validated);
+
+        return redirect('/mypet')->with('success', 'Hewan peliharaan berhasil ditambahkan.');
+    }
+
 
     public function show(Pet $pet)
     {

@@ -11,14 +11,15 @@
                 {{-- HOME --}}
                 @can('admin')
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/admin">Home</a>
+                        <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/admin">Beranda</a>
                     </li>
                 @endcan
-                @if (!auth()->check() || Gate::allows('customer'))
+
+                @can('customer')
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">Home</a>
                     </li>
-                @endif
+                @endcan
 
                 {{-- MENU ADMIN --}}
                 @can('admin')
@@ -26,10 +27,10 @@
                         <a class="nav-link {{ Request::is('pelanggan*') ? 'active' : '' }}" href="/pelanggan">Pelanggan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pets</a>
+                        <a class="nav-link {{ Request::is('pets*') ? 'active' : '' }}" href="/pets">Pet</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Service</a>
+                        <a class="nav-link {{ Request::is('service*') ? 'active' : '' }}" href="/service">Layanan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('bookings*') ? 'active' : '' }}" href="/bookings">Pemesanan</a>
@@ -39,50 +40,60 @@
                     </li>
                 @endcan
 
-                {{-- MENU CUSTOMER - Tampil selalu, redirect ke login jika belum login --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">
-                        Our Service
-                    </a>
-                </li>
+                {{-- MENU CUSTOMER --}}
+                @can('customer')
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">
+                            Layanan
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}"
-                        href="{{ auth()->check() && Gate::allows('customer') ? '/mypet' : route('login') }}">
-                        My Pet
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mybooking*') ? 'active' : '' }}"
-                        href="{{ auth()->check() && Gate::allows('customer') ? '/mybooking' : route('login') }}">
-                        Pemesanan Saya
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('mybill*') ? 'active' : '' }}"
-                        href="{{ auth()->check() && Gate::allows('customer') ? '/mybill' : route('login') }}">
-                        Transaksi Saya
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}" href="/mypet">
+                            Pet
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mybooking*') ? 'active' : '' }}" href="/mybooking">
+                            Pemesanan
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('mybill*') ? 'active' : '' }}" href="/mybill">
+                            Transaksi
+                        </a>
+                    </li>
+                @endcan
+
+                {{-- MENU UNTUK GUEST --}}
+                @guest
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="/">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">
+                            Layanan
+                        </a>
+                    </li>
+                @endguest
             </ul>
 
             {{-- AUTH SECTION --}}
             <ul class="navbar-nav ms-auto align-items-center">
                 @guest
-                    {{-- Tombol Login --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">
                             <i class="bi bi-box-arrow-in-right"></i> Login
                         </a>
                     </li>
                 @else
-                    {{-- Link Profile --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">
                             <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
                         </a>
                     </li>
-                    {{-- Tombol Logout --}}
                     <li class="nav-item">
                         <form action="/logout" method="POST" class="d-inline">
                             @csrf

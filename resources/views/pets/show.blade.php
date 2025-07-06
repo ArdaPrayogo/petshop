@@ -14,7 +14,8 @@
                 <p><strong>Pemilik:</strong> {{ $pet->user->name }} ({{ $pet->user->email }})</p>
 
                 <a href="{{ route('pets.edit', $pet->id) }}" class="btn btn-warning">Edit</a>
-                <a href="{{ route('pets.index') }}" class="btn btn-secondary">Kembali</a>
+                <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
+
             </div>
         </div>
     </div>

@@ -47,10 +47,28 @@
             </div>
 
             {{-- Jadwal --}}
+            {{-- Pilih Hari --}}
             <div class="mb-3">
-                <label for="schedule_time">Waktu Jadwal</label>
-                <input type="datetime-local" name="schedule_time" class="form-control" required>
+                <label for="day">Hari</label>
+                <select name="day" id="day" class="form-select" required>
+                    <option disabled selected>Pilih Hari</option>
+                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day)
+                        <option value="{{ $day }}">{{ $day }}</option>
+                    @endforeach
+                </select>
             </div>
+
+            {{-- Pilih Jam --}}
+            <div class="mb-3">
+                <label for="time">Jam</label>
+                <select name="time" id="time" class="form-select" required>
+                    <option disabled selected>Pilih Jam</option>
+                    @for ($hour = 8; $hour <= 20; $hour++)
+                        <option value="{{ sprintf('%02d:00', $hour) }}">{{ sprintf('%02d:00', $hour) }}</option>
+                    @endfor
+                </select>
+            </div>
+
 
             <button class="btn btn-primary">Simpan</button>
             <a href="{{ route('bookings.index') }}" class="btn btn-secondary">Batal</a>

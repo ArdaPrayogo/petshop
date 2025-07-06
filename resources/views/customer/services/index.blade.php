@@ -2,34 +2,49 @@
 
 @section('container')
     <div class="container">
-        <h2 class="mb-4">Hewan Peliharaan Saya</h2>
-        <a href="{{ route('pets.create') }}" class="btn btn-primary mb-3">Tambah Hewan</a>
-
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+        {{-- Alert Berhasil Tambah/Edit --}}
+        @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show col-lg-12" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
-        <div class="row">
-            @forelse ($pets as $pet)
-                <div class="col-md-4">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $pet->name }}</h5>
-                            <p class="card-text mb-1"><strong>Jenis:</strong> {{ $pet->species }}</p>
-                            <p class="card-text mb-1"><strong>Ras:</strong> {{ $pet->breed ?? '-' }}</p>
-                            <p class="card-text mb-1"><strong>Usia:</strong> {{ $pet->age ?? '-' }} tahun</p>
+        {{-- Alert Berhasil Hapus --}}
+        @if (session()->has('deleted'))
+            <div class="alert alert-danger alert-dismissible fade show col-lg-12" role="alert">
+                {{ session('deleted') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
-                            {{-- Tombol Aksi --}}
-                            <div class="d-flex justify-content-between mt-3">
-                                <a href="{{ route('pets.show', $pet) }}" class="btn btn-info btn-sm">Detail</a>
-                                <a href="{{ route('bookings.create', ['pet_id' => $pet->id]) }}"
-                                    class="btn btn-success btn-sm">Tambah ke Booking</a>
-                            </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Daftar Layanan</h2>
+            <div>
+
+                <a href="{{ auth()->check() ? '/mybooking/create' : route('login') }}" class="btn btn-sm btn-warning">
+                    Pesan layanan
+                </a>
+            </div>
+
+        </div>
+
+        <div class="row">
+            @forelse ($services as $service)
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $service->name }}</h5>
+                            <h6 class="card-text">Deskripsi:</h6>
+                            <p class="card-text">{{ $service->description }}:</p>
+                            <p class="card-text"><strong>Harga:</strong> Rp{{ number_format($service->price, 0, ',', '.') }}
+                            </p>
+                            <p class="card-text"><strong>Durasi:</strong> {{ $service->duration }} menit</p>
                         </div>
                     </div>
                 </div>
             @empty
-                <p>Tidak ada hewan peliharaan. Tambahkan sekarang.</p>
+                <p class="text-muted">Belum ada layanan tersedia.</p>
             @endforelse
         </div>
     </div>

@@ -2,7 +2,7 @@
 
 @section('container')
     <div class="container">
-        <h2>Daftar Jadwal Layanan (Satu Per Hewan)</h2>
+        <h2>Daftar Jadwal Layanan</h2>
         <a href="{{ route('bookings.create') }}" class="btn btn-primary mb-3">Tambah Jadwal</a>
 
         @if (session('success'))
@@ -27,11 +27,28 @@
                         <td>
                             <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info btn-sm">Detail</a>
                             <a href="{{ route('bookings.edit', $booking->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="d-inline">
+                            <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="d-inline"
+                                onsubmit="return confirm('Yakin ingin menghapus?')">
                                 @csrf @method('DELETE')
-                                <button onclick="return confirm('Yakin ingin menghapus?')"
-                                    class="btn btn-danger btn-sm">Hapus</button>
+                                <button class="btn btn-danger btn-sm">Hapus</button>
                             </form>
+
+                            {{-- Tombol Konfirmasi atau Selesaikan --}}
+                            @if ($booking->status === 'pending')
+                                <form action="{{ route('bookings.updateStatus', [$booking->id, 'confirmed']) }}"
+                                    method="POST" class="d-inline">
+                                    @csrf @method('PUT')
+                                    <button class="btn btn-success btn-sm"
+                                        onclick="return confirm('Konfirmasi jadwal ini?')">Konfirmasi</button>
+                                </form>
+                            @elseif ($booking->status === 'confirmed')
+                                <form action="{{ route('bookings.updateStatus', [$booking->id, 'completed']) }}"
+                                    method="POST" class="d-inline">
+                                    @csrf @method('PUT')
+                                    <button class="btn btn-primary btn-sm"
+                                        onclick="return confirm('Tandai jadwal ini selesai?')">Selesaikan</button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

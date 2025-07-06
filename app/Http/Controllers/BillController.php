@@ -6,6 +6,7 @@ use App\Models\Bill;
 use App\Models\User;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BillController extends Controller
 {
@@ -13,6 +14,22 @@ class BillController extends Controller
     {
         $bills = Bill::with('booking.pet.user', 'booking.services')->latest()->get();
         return view('bills.index', compact('bills'));
+    }
+
+    public function indexcustomer()
+    {
+        // Ambil user yang sedang login
+        $userId = Auth::id();
+
+        // Ambil hanya tagihan yang bookingnya berasal dari pet milik user login
+        $bills = Bill::with(['booking.services', 'booking.pet.user'])
+            ->whereHas('booking.pet', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->latest()
+            ->get();
+
+        return view('customer.bills.index', compact('bills'));
     }
 
     public function create()

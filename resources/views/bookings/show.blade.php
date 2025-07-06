@@ -4,7 +4,8 @@
     <div class="container">
         <h2>Detail Jadwal Layanan</h2>
 
-        <a href="{{ route('bookings.index') }}" class="btn btn-secondary mb-3">Kembali</a>
+        <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
+
 
         <div class="card">
             <div class="card-body">
@@ -22,5 +23,33 @@
                 </ul>
             </div>
         </div>
+        @can('customer')
+            @if ($booking->status !== 'cancelled')
+                <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST" class="mt-3">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" name="redirect_to" value="{{ url()->previous() }}">
+                    <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Yakin ingin membatalkan pemesanan ini?')">
+                        Batalkan Pemesanan
+                    </button>
+                </form>
+            @endif
+
+            @if (in_array($booking->status, ['confirmed', 'completed']))
+                <a href="{{ route('bookings.pay', $booking->id) }}" class="btn btn-success btn-sm ">
+                    Bayar
+                </a>
+            @elseif ($booking->status === 'pending')
+                <a href="{{ route('bookings.pay', $booking->id) }}" class="btn btn-success btn-sm disabled">
+                    Bayar
+                </a>
+                <p class=" small text-muted mt-2">
+                    Pembayaran hanya bisa dilakukan setelah pemesanan dikonfirmasi atau diselesaikan.
+                </p>
+            @endif
+        @endcan
+
+
     </div>
 @endsection

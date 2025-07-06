@@ -36,7 +36,8 @@
                     <a href="{{ route('bills.pay.form', $bill->id) }}" class="btn btn-success">Bayar Sekarang</a>
                 @endif
 
-                <a href="{{ route('bills.index') }}" class="btn btn-secondary mt-2">Kembali</a>
+                <a href="{{ url()->previous() }}" class="btn btn-secondary mt-2">Kembali</a>
+
             </div>
         </div>
     </div>

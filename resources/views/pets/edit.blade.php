@@ -18,17 +18,19 @@
             @csrf
             @method('PUT')
 
-            <div class="mb-3">
-                <label>Pemilik</label>
-                <select name="user_id" class="form-select" required>
-                    @foreach ($users as $user)
-                        <option value="{{ $user->id }}"
-                            {{ old('user_id', $pet->user_id) == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            @can('admin')
+                <div class="mb-3">
+                    <label>Pemilik</label>
+                    <select name="user_id" class="form-select" required>
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}"
+                                {{ old('user_id', $pet->user_id) == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endcan
 
             <div class="mb-3">
                 <label>Nama Hewan</label>
@@ -52,7 +54,8 @@
             </div>
 
             <button class="btn btn-primary">Update</button>
-            <a href="{{ route('pets.index') }}" class="btn btn-secondary">Batal</a>
+            <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
+
         </form>
     </div>
 @endsection
