@@ -30,7 +30,7 @@ class LoginController extends Controller
             if ($role === 'admin') {
                 return redirect()->intended('/admin');
             } elseif ($role === 'customer') {
-                return redirect()->intended('/customer');
+                return redirect()->intended('/');
             } else {
                 Auth::logout(); // jika role tidak dikenali
                 return back()->with('loginError', 'Role tidak dikenali.');
