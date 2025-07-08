@@ -49,6 +49,12 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link {{ Request::is('queue*') ? 'active' : '' }}" href="/queue">
+                            Daftar Antrian
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link {{ Request::is('mypet*') ? 'active' : '' }}" href="/mypet">
                             Pet
                         </a>
@@ -75,6 +81,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('ourservice*') ? 'active' : '' }}" href="/ourservice">
                             Layanan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('queue*') ? 'active' : '' }}" href="/queue">
+                            Daftar Antrian
                         </a>
                     </li>
                 @endguest

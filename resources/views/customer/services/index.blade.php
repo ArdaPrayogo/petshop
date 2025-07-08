@@ -20,12 +20,6 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="mb-0">Daftar Layanan</h2>
-            <div>
-
-                <a href="{{ auth()->check() ? '/mybooking/create' : route('login') }}" class="btn btn-sm btn-warning">
-                    Pesan layanan
-                </a>
-            </div>
 
         </div>
 

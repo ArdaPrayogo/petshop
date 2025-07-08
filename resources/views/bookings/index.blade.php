@@ -2,57 +2,73 @@
 
 @section('container')
     <div class="container">
-        <h2>Daftar Jadwal Layanan</h2>
-        <a href="{{ route('bookings.create') }}" class="btn btn-primary mb-3">Tambah Jadwal</a>
+        <div class="mb-3 d-flex justify-content-between">
+            <h2>Kalender Jadwal Layanan</h2>
+            @guest
+                {{-- Guest: Belum login --}}
+                <a href="{{ route('login') }}" class="btn btn-outline-warning">
+                    Pesan layanan
+                </a>
+            @else
+                @if (auth()->user()->role === 'customer')
+                    {{-- Customer: Tampilkan tombol ke form booking --}}
+                    <a href="/mybooking/create" class="btn btn-sm btn-warning">
+                        Pesan layanan
+                    </a>
+                @endif
+                {{-- Admin: Tidak ditampilkan --}}
+            @endguest
 
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+            @can('admin')
+                <a href="{{ route('bookings.create') }}" class="btn btn-primary mb-3">Tambah Jadwal</a>
+            @endcan
+        </div>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Hewan</th>
-                    <th>Waktu</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($bookings as $booking)
-                    <tr>
-                        <td>{{ $booking->pet->name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($booking->schedule_time)->format('d M Y H:i') }}</td>
-                        <td>{{ ucfirst($booking->status) }}</td>
-                        <td>
-                            <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info btn-sm">Detail</a>
-                            <a href="{{ route('bookings.edit', $booking->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('bookings.destroy', $booking->id) }}" method="POST" class="d-inline"
-                                onsubmit="return confirm('Yakin ingin menghapus?')">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-danger btn-sm">Hapus</button>
-                            </form>
+        @php
+            // Urutan hari Indonesia
+            $dayOrder = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-                            {{-- Tombol Konfirmasi atau Selesaikan --}}
-                            @if ($booking->status === 'pending')
-                                <form action="{{ route('bookings.updateStatus', [$booking->id, 'confirmed']) }}"
-                                    method="POST" class="d-inline">
-                                    @csrf @method('PUT')
-                                    <button class="btn btn-success btn-sm"
-                                        onclick="return confirm('Konfirmasi jadwal ini?')">Konfirmasi</button>
-                                </form>
-                            @elseif ($booking->status === 'confirmed')
-                                <form action="{{ route('bookings.updateStatus', [$booking->id, 'completed']) }}"
-                                    method="POST" class="d-inline">
-                                    @csrf @method('PUT')
-                                    <button class="btn btn-primary btn-sm"
-                                        onclick="return confirm('Tandai jadwal ini selesai?')">Selesaikan</button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            // Siapkan struktur kosong per hari
+            $days = [];
+            foreach ($dayOrder as $day) {
+                $days[$day] = collect();
+            }
+
+            // Isi jadwal berdasarkan hari dari grouped
+            foreach ($grouped as $label => $items) {
+                $dayName = \Carbon\Carbon::parse($items->first()->schedule_time)
+                    ->locale('id')
+                    ->isoFormat('dddd');
+                $dayName = ucfirst($dayName);
+                if (isset($days[$dayName])) {
+                    $days[$dayName] = $items->sortBy('schedule_time');
+                }
+            }
+        @endphp
+
+        {{-- Grid Baris 1: Senin - Rabu --}}
+        <div class="row">
+            @foreach (['Senin', 'Selasa', 'Rabu'] as $day)
+                <div class="col-md-4 mb-4">
+                    @include('partials.card', ['day' => $day, 'bookings' => $days[$day]])
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Grid Baris 2: Kamis - Sabtu --}}
+        <div class="row">
+            @foreach (['Kamis', 'Jumat', 'Sabtu'] as $day)
+                <div class="col-md-4 mb-4">
+                    @include('partials.card', ['day' => $day, 'bookings' => $days[$day]])
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Grid Baris 3: Minggu --}}
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                @include('partials.card', ['day' => 'Minggu', 'bookings' => $days['Minggu']])
+            </div>
+        </div>
     </div>
 @endsection

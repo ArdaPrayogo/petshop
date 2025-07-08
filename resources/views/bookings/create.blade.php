@@ -2,11 +2,11 @@
 
 @section('container')
     <div class="container">
-        <h2>Tambah Jadwal Layanan</h2>
+        <h2 class="mb-4">Tambah Jadwal Layanan</h2>
 
         @if ($errors->any())
             <div class="alert alert-danger">
-                <ul>
+                <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -18,49 +18,56 @@
             @csrf
 
             {{-- Pilih Hewan --}}
-            <div class="mb-3">
-                <label for="pet_id">Hewan</label>
+            <div class="mb-4">
+                <label for="pet_id" class="form-label"><strong>Hewan Peliharaan</strong></label>
                 <select name="pet_id" id="pet_id" class="form-select" required>
-                    <option disabled selected>Pilih Hewan</option>
+                    <option disabled selected>Pilih Hewan Anda</option>
                     @foreach ($pets as $pet)
-                        <option value="{{ $pet->id }}">
-                            {{ $pet->name }} ({{ $pet->user->name }})
-                        </option>
+                        <option value="{{ $pet->id }}">{{ $pet->name }} ({{ $pet->species }})</option>
                     @endforeach
                 </select>
             </div>
 
-            {{-- Pilih Layanan (Checkbox) --}}
-            <div class="mb-3">
-                <label for="services">Pilih Layanan</label>
-                <div class="form-control" style="height:auto;">
+            {{-- Pilih Layanan --}}
+            <div class="mb-4">
+                <label class="form-label"><strong>Pilih Layanan</strong></label>
+                <div class="row">
                     @foreach ($services as $service)
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" name="services[]" value="{{ $service->id }}"
-                                id="service-{{ $service->id }}">
-                            <label class="form-check-label" for="service-{{ $service->id }}">
-                                {{ $service->name }} - Rp {{ number_format($service->price, 0, ',', '.') }}
-                            </label>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="services[]"
+                                            value="{{ $service->id }}" id="service-{{ $service->id }}">
+                                        <label class="form-check-label" for="service-{{ $service->id }}">
+                                            <strong>{{ $service->name }}</strong>
+                                        </label>
+                                    </div>
+                                    <hr>
+                                    <p class="mb-1"><i class="bi bi-cash"></i> Rp
+                                        {{ number_format($service->price, 0, ',', '.') }}</p>
+                                    <p class="mb-0"><i class="bi bi-clock"></i> {{ $service->duration }} menit</p>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             </div>
 
-            {{-- Jadwal --}}
             {{-- Pilih Hari --}}
             <div class="mb-3">
-                <label for="day">Hari</label>
+                <label for="day" class="form-label"><strong>Hari</strong></label>
                 <select name="day" id="day" class="form-select" required>
                     <option disabled selected>Pilih Hari</option>
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day)
-                        <option value="{{ $day }}">{{ $day }}</option>
+                    @foreach ($days as $day)
+                        <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
                     @endforeach
                 </select>
             </div>
 
             {{-- Pilih Jam --}}
             <div class="mb-3">
-                <label for="time">Jam</label>
+                <label for="time" class="form-label"><strong>Jam</strong></label>
                 <select name="time" id="time" class="form-select" required>
                     <option disabled selected>Pilih Jam</option>
                     @for ($hour = 8; $hour <= 20; $hour++)
@@ -69,9 +76,14 @@
                 </select>
             </div>
 
-
-            <button class="btn btn-primary">Simpan</button>
-            <a href="{{ route('bookings.index') }}" class="btn btn-secondary">Batal</a>
+            <div class="d-flex justify-content-between">
+                <a href="/mybooking" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Batal
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Simpan Jadwal
+                </button>
+            </div>
         </form>
     </div>
 @endsection

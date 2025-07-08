@@ -54,21 +54,20 @@
                 </div>
             </div>
 
-            {{-- Jadwal --}}
             {{-- Pilih Hari --}}
             <div class="mb-3">
-                <label for="day">Hari</label>
+                <label for="day" class="form-label"><strong>Hari</strong></label>
                 <select name="day" id="day" class="form-select" required>
                     <option disabled selected>Pilih Hari</option>
-                    @foreach (['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] as $day)
-                        <option value="{{ $day }}">{{ $day }}</option>
+                    @foreach ($days as $day)
+                        <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
                     @endforeach
                 </select>
             </div>
 
             {{-- Pilih Jam --}}
             <div class="mb-3">
-                <label for="time">Jam</label>
+                <label for="time" class="form-label"><strong>Jam</strong></label>
                 <select name="time" id="time" class="form-select" required>
                     <option disabled selected>Pilih Jam</option>
                     @for ($hour = 8; $hour <= 20; $hour++)
@@ -76,7 +75,6 @@
                     @endfor
                 </select>
             </div>
-
 
             <div class="d-flex justify-content-between">
                 <a href="/mybooking" class="btn btn-secondary">

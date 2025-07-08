@@ -63,6 +63,7 @@ Route::post('/bookings/{booking}/pay', [BookingController::class, 'storebillcust
 
 // CRUD CUSTOMER
 Route::get('/ourservice', [ServiceController::class, 'indexcustomer']);
+Route::get('/queue', [BookingController::class, 'index']);
 
 Route::get('/mypet', [PetController::class, 'indexcustomer']);
 Route::get('/mypet/create', [PetController::class, 'createcustomer']);

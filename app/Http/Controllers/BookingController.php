@@ -13,23 +13,29 @@ use Illuminate\Support\Carbon;
 
 class BookingController extends Controller
 {
+
     public function index()
     {
-        // Ambil ID booking yang muncul di tabel pivot (booking_service), hanya sekali per ID
         $bookingIds = DB::table('booking_service')
             ->select('booking_id')
             ->groupBy('booking_id')
             ->pluck('booking_id');
-        // dd($bookingIds);
 
-        // Ambil data booking yang ID-nya ada di hasil di atas, lengkap dengan pet, user, services
-        $bookings = Booking::with(['pet.user', 'services'])
+        $bookings = Booking::with(['pet.user'])
             ->whereIn('id', $bookingIds)
-            ->orderByDesc('schedule_time')
+            ->orderBy('schedule_time')
             ->get();
 
-        return view('bookings.index', compact('bookings'));
+        $grouped = $bookings->groupBy(function ($booking) {
+            return \Carbon\Carbon::parse($booking->schedule_time)
+                ->locale('id')
+                ->isoFormat('dddd, D MMMM Y');
+        });
+
+        return view('bookings.index', compact('grouped'));
     }
+
+
 
     public function indexcustomer()
     {
@@ -76,11 +82,34 @@ class BookingController extends Controller
     }
 
 
+
     public function create()
     {
         $pets = Pet::with('user')->get();
         $services = Service::all();
-        return view('bookings.create', compact('pets', 'services'));
+
+        $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        $carbonDays = [1, 2, 3, 4, 5, 6, 0]; // Carbon: 0 = Minggu, 1 = Senin, dst
+
+        $now = Carbon::now();
+        $days = [];
+
+        foreach ($dayNames as $i => $dayName) {
+            $targetDate = Carbon::now()->next($carbonDays[$i]);
+
+            // Kalau hari ini, tetap pakai hari ini
+            if ($targetDate->dayOfWeek === $now->dayOfWeek) {
+                $targetDate = $now->copy();
+            }
+
+            $days[] = [
+                'label' => $dayName,
+                'date' => $targetDate->format('Y-m-d'),
+                'display' => "$dayName ({$targetDate->format('d M Y')})"
+            ];
+        }
+
+        return view('bookings.create', compact('pets', 'services', 'days'));
     }
 
     public function createcustomer()
@@ -93,7 +122,29 @@ class BookingController extends Controller
         // Ambil semua layanan
         $services = Service::all();
 
-        return view('customer.bookings.create', compact('pets', 'services'));
+        // Hitung daftar hari + tanggal terdekat
+        $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        $carbonDays = [1, 2, 3, 4, 5, 6, 0]; // urutan sesuai Carbon
+
+        $now = Carbon::now();
+        $days = [];
+
+        foreach ($dayNames as $i => $dayName) {
+            $targetDate = Carbon::now()->next($carbonDays[$i]);
+
+            // Jika hari ini, pakai hari ini
+            if ($targetDate->dayOfWeek === $now->dayOfWeek) {
+                $targetDate = $now->copy();
+            }
+
+            $days[] = [
+                'label' => $dayName,
+                'date' => $targetDate->format('Y-m-d'),
+                'display' => "$dayName ({$targetDate->format('d M Y')})"
+            ];
+        }
+
+        return view('customer.bookings.create', compact('pets', 'services', 'days'));
     }
 
 
