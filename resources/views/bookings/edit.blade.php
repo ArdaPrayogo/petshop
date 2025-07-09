@@ -40,6 +40,7 @@
                             </option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="pet_id" value="{{ $booking->pet_id }}">
                 </div>
             @endcan
 
@@ -61,6 +62,22 @@
                 </div>
             </div>
 
+            {{-- Pickup Service --}}
+            <div class="mb-3">
+                <label><strong>Layanan Antar</strong></label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="pickup_service" id="pickup_yes" value="1"
+                            {{ $booking->pickup_service ? 'checked' : '' }}>
+                        <label class="form-check-label" for="pickup_yes">Iya</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="pickup_service" id="pickup_no" value="0"
+                            {{ !$booking->pickup_service ? 'checked' : '' }}>
+                        <label class="form-check-label" for="pickup_no">Tidak</label>
+                    </div>
+                </div>
+            </div>
 
             <div class="mb-3">
                 <label>Waktu Jadwal</label>

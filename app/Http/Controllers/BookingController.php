@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pet;
-use App\Models\Bill;
-use App\Models\Booking;
-use App\Models\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use App\Models\{Pet, Bill, Booking, Service};
+use Illuminate\Http\{Request, RedirectResponse};
+use Illuminate\Support\Facades\{DB, Auth};
 use Illuminate\Support\Carbon;
 
 class BookingController extends Controller
 {
-
     public function index()
     {
         $bookingIds = DB::table('booking_service')
@@ -23,37 +18,50 @@ class BookingController extends Controller
 
         $bookings = Booking::with(['pet.user'])
             ->whereIn('id', $bookingIds)
+            ->whereNotIn('status', ['completed', 'cancelled'])
             ->orderBy('schedule_time')
             ->get();
 
         $grouped = $bookings->groupBy(function ($booking) {
-            return \Carbon\Carbon::parse($booking->schedule_time)
-                ->locale('id')
-                ->isoFormat('dddd, D MMMM Y');
+            return Carbon::parse($booking->schedule_time)->locale('id')->isoFormat('dddd, D MMMM Y');
         });
 
         return view('bookings.index', compact('grouped'));
     }
 
-
-
-    public function indexcustomer()
+    public function indexhistoryadmin()
     {
-        $userId = Auth::id(); // ID user login
-
-        // Ambil ID booking yang memiliki service (jika diperlukan)
         $bookingIds = DB::table('booking_service')
             ->select('booking_id')
             ->groupBy('booking_id')
             ->pluck('booking_id');
 
-        // Ambil booking milik user login dengan status 'pending' atau 'confirmed'
+        $bookings = Booking::with(['pet.user'])
+            ->whereIn('id', $bookingIds)
+            ->whereIn('status', ['completed', 'cancelled']) // ✅ hanya completed & cancelled
+            ->orderBy('schedule_time')
+            ->get();
+
+        $grouped = $bookings->groupBy(function ($booking) {
+            return Carbon::parse($booking->schedule_time)->locale('id')->isoFormat('dddd, D MMMM Y');
+        });
+
+        return view('bookings.history', compact('grouped'));
+    }
+
+    public function indexcustomer()
+    {
+        $userId = Auth::id();
+
+        $bookingIds = DB::table('booking_service')
+            ->select('booking_id')
+            ->groupBy('booking_id')
+            ->pluck('booking_id');
+
         $bookings = Booking::with(['pet.user', 'services'])
             ->whereIn('id', $bookingIds)
-            ->whereIn('status', ['pending', 'confirmed']) // ✅ Filter status di sini
-            ->whereHas('pet', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereHas('pet', fn($q) => $q->where('user_id', $userId))
             ->orderByDesc('schedule_time')
             ->get();
 
@@ -71,37 +79,29 @@ class BookingController extends Controller
 
         $bookings = Booking::with(['pet.user', 'services'])
             ->whereIn('id', $bookingIds)
-            ->whereIn('status', ['completed', 'cancelled']) // ✅ Hanya status riwayat
-            ->whereHas('pet', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
+            ->whereIn('status', ['completed', 'cancelled'])
+            ->whereHas('pet', fn($q) => $q->where('user_id', $userId))
             ->orderByDesc('schedule_time')
             ->get();
 
         return view('customer.bookings.history', compact('bookings'));
     }
 
-
-
     public function create()
     {
         $pets = Pet::with('user')->get();
         $services = Service::all();
-
         $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-        $carbonDays = [1, 2, 3, 4, 5, 6, 0]; // Carbon: 0 = Minggu, 1 = Senin, dst
+        $carbonDays = [1, 2, 3, 4, 5, 6, 0];
 
         $now = Carbon::now();
         $days = [];
 
         foreach ($dayNames as $i => $dayName) {
             $targetDate = Carbon::now()->next($carbonDays[$i]);
-
-            // Kalau hari ini, tetap pakai hari ini
             if ($targetDate->dayOfWeek === $now->dayOfWeek) {
                 $targetDate = $now->copy();
             }
-
             $days[] = [
                 'label' => $dayName,
                 'date' => $targetDate->format('Y-m-d'),
@@ -114,29 +114,20 @@ class BookingController extends Controller
 
     public function createcustomer()
     {
-        $userId = Auth::id(); // ID user yang sedang login
-
-        // Ambil hanya hewan milik user yang login
+        $userId = Auth::id();
         $pets = Pet::where('user_id', $userId)->get();
-
-        // Ambil semua layanan
         $services = Service::all();
-
-        // Hitung daftar hari + tanggal terdekat
         $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-        $carbonDays = [1, 2, 3, 4, 5, 6, 0]; // urutan sesuai Carbon
+        $carbonDays = [1, 2, 3, 4, 5, 6, 0];
 
         $now = Carbon::now();
         $days = [];
 
         foreach ($dayNames as $i => $dayName) {
             $targetDate = Carbon::now()->next($carbonDays[$i]);
-
-            // Jika hari ini, pakai hari ini
             if ($targetDate->dayOfWeek === $now->dayOfWeek) {
                 $targetDate = $now->copy();
             }
-
             $days[] = [
                 'label' => $dayName,
                 'date' => $targetDate->format('Y-m-d'),
@@ -147,7 +138,6 @@ class BookingController extends Controller
         return view('customer.bookings.create', compact('pets', 'services', 'days'));
     }
 
-
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -156,32 +146,20 @@ class BookingController extends Controller
             'services.*' => 'exists:services,id',
             'day' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'time' => 'required|date_format:H:i',
+            'pickup_service' => 'required|boolean',
         ]);
 
-        // Mapping hari ke format Carbon
-        $dayMap = [
-            'Minggu' => 0,
-            'Senin' => 1,
-            'Selasa' => 2,
-            'Rabu' => 3,
-            'Kamis' => 4,
-            'Jumat' => 5,
-            'Sabtu' => 6,
-        ];
-
+        $dayMap = ['Minggu' => 0, 'Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6];
         $today = now();
         $targetDay = $dayMap[$validated['day']];
 
-        // Temukan tanggal berikutnya dengan hari yang dipilih
         $scheduleDate = now()->next($targetDay);
         if ($today->dayOfWeek === $targetDay && $validated['time'] > $today->format('H:i')) {
-            $scheduleDate = $today; // Hari ini jika waktu belum lewat
+            $scheduleDate = $today;
         }
 
-        // Gabungkan tanggal + waktu ke datetime
         $schedule_time = $scheduleDate->format('Y-m-d') . ' ' . $validated['time'];
 
-        // Cek apakah waktu sudah terpakai
         if (Booking::where('schedule_time', $schedule_time)->exists()) {
             return back()->withErrors(['time' => 'Waktu jadwal ini sudah terpakai.'])->withInput();
         }
@@ -190,6 +168,7 @@ class BookingController extends Controller
             'pet_id' => $validated['pet_id'],
             'schedule_time' => $schedule_time,
             'status' => 'pending',
+            'pickup_service' => $validated['pickup_service'],
         ]);
 
         $booking->services()->attach($validated['services']);
@@ -202,8 +181,6 @@ class BookingController extends Controller
         }
     }
 
-
-
     public function show(Booking $booking)
     {
         return view('bookings.show', compact('booking'));
@@ -211,38 +188,64 @@ class BookingController extends Controller
 
     public function edit(Booking $booking)
     {
+        if (request()->has('redirect_to')) {
+            session(['redirect_to' => request('redirect_to')]);
+        }
+
         $pets = Pet::with('user')->get();
         $services = Service::all();
+
         return view('bookings.edit', compact('booking', 'pets', 'services'));
     }
+
+
 
     public function update(Request $request, Booking $booking)
     {
         $validated = $request->validate([
-            'schedule_time' => 'required|date',
-            'status' => 'required|in:pending,confirmed,completed,cancelled',
+            'schedule_time'    => 'required|date',
+            'status'           => 'required|in:pending,confirmed,completed,cancelled',
+            'pickup_service'   => 'required|boolean',
+            'service_ids'      => 'nullable|array',
+            'service_ids.*'    => 'exists:services,id',
+            'pet_id'           => 'sometimes|exists:pets,id',
         ]);
 
-        // Update status & jadwal
+        // Update utama
         $booking->update([
-            'schedule_time' => $validated['schedule_time'],
-            'status' => $validated['status'],
+            'schedule_time'   => $validated['schedule_time'],
+            'status'          => $validated['status'],
+            'pickup_service'  => $validated['pickup_service'],
         ]);
 
-        // Jika status menjadi 'completed' dan belum ada tagihan
+        // Jika ada layanan, sync ulang
+        if (isset($validated['service_ids'])) {
+            $booking->services()->sync($validated['service_ids']);
+        }
+
+        // Jika admin mengubah pet
+        if (auth()->user()->can('admin') && isset($validated['pet_id'])) {
+            $booking->update(['pet_id' => $validated['pet_id']]);
+        }
+
+        // Jika completed dan belum ada bill
         if ($validated['status'] === 'completed' && !$booking->bill) {
             $total = $booking->services->sum('price');
 
             Bill::create([
-                'booking_id' => $booking->id,
-                'total_amount' => $total,
-                'status' => 'unpaid',
-                'bill_date' => now(),
+                'booking_id'    => $booking->id,
+                'total_amount'  => $total,
+                'status'        => 'unpaid',
+                'bill_date'     => now(),
             ]);
         }
 
-        return redirect()->route('bookings.index')->with('success', 'Booking berhasil diperbarui.');
+        // Ambil asal dari session (diset saat buka form edit)
+        $redirectTo = session()->pull('redirect_to', '/bookings'); // default fallback
+        return redirect($redirectTo)->with('success', 'Jadwal berhasil diperbarui.');
     }
+
+
 
     public function destroy(Booking $booking)
     {
@@ -256,12 +259,8 @@ class BookingController extends Controller
             abort(403);
         }
 
-        $booking->update([
-            'status' => 'cancelled'
-        ]);
-
+        $booking->update(['status' => 'cancelled']);
         $redirect = $request->input('redirect_to') ?? route('mybooking.index');
-
         return redirect($redirect)->with('success', 'Pemesanan berhasil dibatalkan.');
     }
 
@@ -271,65 +270,48 @@ class BookingController extends Controller
         return view('customer.bills.create', compact('booking', 'total'));
     }
 
-    // Simpan pembayaran tagihan
     public function storebillcustomer(Request $request)
     {
         $request->validate([
-            'booking_id'     => 'required|exists:bookings,id',
-            'total_amount'   => 'required|numeric|min:0',
-            'paid_amount'    => 'required|numeric|min:0',
+            'booking_id' => 'required|exists:bookings,id',
+            'total_amount' => 'required|numeric|min:0',
+            'paid_amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:cash,transfer,qris',
-            'status'         => 'required|in:paid,unpaid,cancelled',
-            'bill_date'      => 'required|date',
+            'status' => 'required|in:paid,unpaid,cancelled',
+            'bill_date' => 'required|date',
         ]);
 
         $booking = Booking::findOrFail($request->booking_id);
+        $change = $request->paid_amount >= $request->total_amount ? $request->paid_amount - $request->total_amount : null;
 
-        // Hitung kembalian jika ada
-        $change = null;
-        if ($request->paid_amount >= $request->total_amount) {
-            $change = $request->paid_amount - $request->total_amount;
-        }
-
-        // Simpan tagihan
         Bill::create([
-            'booking_id'     => $booking->id,
-            'total_amount'   => $request->total_amount,
-            'paid_amount'    => $request->paid_amount,
-            'change_amount'  => $change,
+            'booking_id' => $booking->id,
+            'total_amount' => $request->total_amount,
+            'paid_amount' => $request->paid_amount,
+            'change_amount' => $change,
             'payment_method' => $request->payment_method,
-            'status'         => $request->status,
-            'bill_date'      => $request->bill_date,
+            'status' => $request->status,
+            'bill_date' => $request->bill_date,
         ]);
 
         return redirect()->route('mybill.index')->with('success', 'Tagihan berhasil dibuat dan dibayar.');
     }
 
-
     public function updateStatus(Booking $booking, $status)
     {
-        $allowedStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+        $allowed = ['pending', 'confirmed', 'completed', 'cancelled'];
+        if (!in_array($status, $allowed)) abort(400, 'Status tidak valid.');
 
-        if (!in_array($status, $allowedStatuses)) {
-            abort(400, 'Status tidak valid.');
-        }
-
-        // Update status booking
         $booking->update(['status' => $status]);
 
-        // Jika status menjadi 'completed', generate tagihan (bill)
-        if ($status === 'completed') {
-            // Cek apakah sudah pernah dibuat bill
-            if (!$booking->bill) {
-                $total = $booking->services->sum('price');
-
-                Bill::create([
-                    'booking_id'    => $booking->id,
-                    'bill_date'     => now(),
-                    'total_amount'  => $total,
-                    'status'        => 'unpaid',
-                ]);
-            }
+        if ($status === 'completed' && !$booking->bill) {
+            $total = $booking->services->sum('price');
+            Bill::create([
+                'booking_id' => $booking->id,
+                'bill_date' => now(),
+                'total_amount' => $total,
+                'status' => 'unpaid',
+            ]);
         }
 
         return redirect()->back()->with('success', 'Status berhasil diubah menjadi ' . ucfirst($status));

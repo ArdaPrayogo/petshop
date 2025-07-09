@@ -3,7 +3,7 @@
 @section('container')
     <div class="container">
         <div class="mb-3 d-flex justify-content-between">
-            <h2>Riwayat Jadwal Layanan</h2>
+            <h2>Kalender Jadwal Layanan</h2>
             @guest
                 {{-- Guest: Belum login --}}
                 <a href="{{ route('login') }}" class="btn btn-outline-warning">
@@ -19,10 +19,10 @@
                 {{-- Admin: Tidak ditampilkan --}}
             @endguest
 
-            @can('admin')
+            {{-- @can('admin')
                 <a href="{{ route('bookings.create') }}" class="btn btn-primary mb-3">Tambah Jadwal</a>
-                <a href="/riwayat" class="btn btn-primary mb-3">Riwayat Jadwal</a>
-            @endcan
+                <a href="{{ route('bookings.history') }}" class="btn btn-primary mb-3">Riwayat Jadwal</a>
+            @endcan --}}
         </div>
 
         @php

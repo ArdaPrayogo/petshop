@@ -7,8 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\BookingController;
-
-
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\RegisterController;
 
@@ -73,5 +72,9 @@ Route::get('/mybooking', [BookingController::class, 'indexcustomer']);
 Route::get('/mybooking/create', [BookingController::class, 'createcustomer']);
 Route::post('/mybooking', [BookingController::class, 'storecustomer']);
 Route::get('/mybooking/history', [BookingController::class, 'indexHistoryCustomer'])->name('mybooking.history');
+Route::get('/riwayat', [BookingController::class, 'indexhistoryadmin']);
 
 Route::get('/mybill', [BillController::class, 'indexcustomer']);
+
+// PDF
+Route::get('/transaksi-pdf/{id}', [PdfController::class, 'generate'])->name('laporan.pdf');

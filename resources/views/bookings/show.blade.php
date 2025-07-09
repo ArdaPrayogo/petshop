@@ -6,7 +6,6 @@
 
         <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
 
-
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">
@@ -14,6 +13,9 @@
                 </h5>
                 <p><strong>Waktu:</strong> {{ \Carbon\Carbon::parse($booking->schedule_time)->format('d M Y H:i') }}</p>
                 <p><strong>Status:</strong> {{ ucfirst($booking->status) }}</p>
+                <p><strong>Layanan Antar:</strong>
+                    {{ $booking->pickup_service ? 'Ya' : 'Tidak' }}
+                </p>
                 <hr>
                 <p><strong>Layanan yang Dipilih:</strong></p>
                 <ul>
@@ -23,6 +25,7 @@
                 </ul>
             </div>
         </div>
+
         @can('customer')
             @if ($booking->status !== 'cancelled')
                 <form action="{{ route('bookings.cancel', $booking->id) }}" method="POST" class="mt-3">
@@ -37,19 +40,17 @@
             @endif
 
             @if (in_array($booking->status, ['confirmed', 'completed']))
-                <a href="{{ route('bookings.pay', $booking->id) }}" class="btn btn-success btn-sm ">
+                <a href="{{ route('bookings.pay', $booking->id) }}" class="btn btn-success btn-sm mt-2">
                     Bayar
                 </a>
             @elseif ($booking->status === 'pending')
-                <a href="{{ route('bookings.pay', $booking->id) }}" class="btn btn-success btn-sm disabled">
+                <a href="#" class="btn btn-success btn-sm mt-2 disabled">
                     Bayar
                 </a>
-                <p class=" small text-muted mt-2">
+                <p class="small text-muted mt-1">
                     Pembayaran hanya bisa dilakukan setelah pemesanan dikonfirmasi atau diselesaikan.
                 </p>
             @endif
         @endcan
-
-
     </div>
 @endsection

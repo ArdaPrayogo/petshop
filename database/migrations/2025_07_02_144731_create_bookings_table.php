@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('pet_id')->constrained()->onDelete('cascade');
             $table->timestamp('schedule_time');
             $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])->default('pending');
+            $table->boolean('pickup_service')->default(false);
             $table->timestamps();
         });
     }

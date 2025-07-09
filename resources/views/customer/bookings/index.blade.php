@@ -24,7 +24,11 @@
 
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info btn-sm">Detail</a>
-                                <a href="{{ route('bookings.edit', $booking->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ route('bookings.edit', $booking->id) }}?redirect_to={{ request()->fullUrl() }}"
+                                    class="btn btn-warning btn-sm">
+                                    Edit
+                                </a>
+
                             </div>
                         </div>
                     </div>

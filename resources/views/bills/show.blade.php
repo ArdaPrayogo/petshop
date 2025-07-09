@@ -35,6 +35,10 @@
                     <p class="text-danger">Tagihan ini belum dibayar.</p>
                     <a href="{{ route('bills.pay.form', $bill->id) }}" class="btn btn-success">Bayar Sekarang</a>
                 @endif
+                <a href="/transaksi-pdf/{{ $bill->id }}" target="_blank" class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-pdf"></i> Cetak Nota
+                </a>
+
 
                 <a href="{{ url()->previous() }}" class="btn btn-secondary mt-2">Kembali</a>
 

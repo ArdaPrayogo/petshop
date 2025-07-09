@@ -76,6 +76,24 @@
                 </select>
             </div>
 
+            {{-- Pickup Service --}}
+            <div class="mb-4">
+                <label class="form-label"><strong>Layanan Antar</strong></label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="pickup_service" id="pickup_yes" value="1"
+                            required>
+                        <label class="form-check-label" for="pickup_yes">Iya</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="pickup_service" id="pickup_no" value="0"
+                            required>
+                        <label class="form-check-label" for="pickup_no">Tidak</label>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Tombol --}}
             <div class="d-flex justify-content-between">
                 <a href="/mybooking" class="btn btn-secondary">
                     <i class="bi bi-arrow-left-circle"></i> Batal

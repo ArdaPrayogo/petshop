@@ -41,6 +41,11 @@
                                 <div class="mt-2 d-flex flex-wrap gap-1">
                                     <a href="{{ route('bookings.show', $booking->id) }}"
                                         class="btn btn-sm btn-outline-info">Detail</a>
+                                    <a href="{{ route('bookings.edit', $booking->id) }}?redirect_to={{ request()->fullUrl() }}"
+                                        class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+
 
                                     @if ($booking->status === 'pending')
                                         <form action="{{ route('bookings.updateStatus', [$booking->id, 'confirmed']) }}"
@@ -49,7 +54,8 @@
                                             <button class="btn btn-sm btn-success">Konfirmasi</button>
                                         </form>
                                     @elseif ($booking->status === 'confirmed')
-                                        <form action="{{ route('bookings.updateStatus', [$booking->id, 'completed']) }}"
+                                        <form
+                                            action="{{ route('bookings.updateStatus', [$booking->id, 'completed']) }}"
                                             method="POST" onsubmit="return confirm('Tandai sebagai selesai?')">
                                             @csrf @method('PUT')
                                             <button class="btn btn-sm btn-primary">Selesaikan</button>
