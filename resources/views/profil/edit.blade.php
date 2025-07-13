@@ -27,7 +27,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>
-            <a href="{{ route('profile.index') }}" class="btn btn-secondary">Batal</a>
+            <a href="{{ route('profile.index') }}" class="btn btn-danger">Batal</a>
         </form>
     </div>
 @endsection

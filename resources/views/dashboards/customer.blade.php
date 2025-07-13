@@ -10,9 +10,10 @@
 
         {{-- Gambar & Tentang --}}
         <div class="row align-items-center mb-5">
-            <div class="col-md-6">
-                <img src="/img/logopet.jpg" class="img-fluid rounded shadow-sm" alt="Petshop Aura">
+            <div class="col-md-6 d-flex justify-content-center">
+                <img src="/img/logopet.png" class="img-fluid w-50" alt="Petshop Aura">
             </div>
+
             <div class="col-md-6">
                 <h4 class="fw-bold mb-3">Tentang Kami</h4>
                 <p>
@@ -37,25 +38,15 @@
             </div>
         </div>
 
-        {{-- Visi & Testimoni --}}
+        {{-- Visi &  --}}
         <div class="row mb-5 g-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="p-4 border-start border-4 border-primary bg-light h-100 rounded">
                     <h5 class="fw-bold mb-3">🎯 Visi Kami</h5>
                     <p class="mb-0">
                         Menjadi pilihan utama keluarga Indonesia dalam memberikan perawatan yang aman, nyaman, dan
                         profesional bagi hewan kesayangan mereka.
                     </p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="p-4 border-start border-4 border-success bg-light h-100 rounded">
-                    <h5 class="fw-bold mb-3">🗣️ Testimoni Pelanggan</h5>
-                    <blockquote class="blockquote mb-0">
-                        <p>"Pelayanan sangat ramah dan profesional. Kucing saya selalu senang ke sini!"</p>
-                        <footer class="blockquote-footer">Nina <cite title="Source Title">— pelanggan sejak 2020</cite>
-                        </footer>
-                    </blockquote>
                 </div>
             </div>
         </div>

@@ -54,26 +54,28 @@
                 </div>
             </div>
 
-            {{-- Pilih Hari --}}
-            <div class="mb-3">
-                <label for="day" class="form-label"><strong>Hari</strong></label>
-                <select name="day" id="day" class="form-select" required>
-                    <option disabled selected>Pilih Hari</option>
-                    @foreach ($days as $day)
-                        <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
-                    @endforeach
-                </select>
-            </div>
+            <div class="d-flex">
+                {{-- Pilih Hari --}}
+                <div class="mb-3 me-3">
+                    <label for="day" class="form-label"><strong>Hari</strong></label>
+                    <select name="day" id="day" class="form-select" required>
+                        <option disabled selected>Pilih Hari</option>
+                        @foreach ($days as $day)
+                            <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-            {{-- Pilih Jam --}}
-            <div class="mb-3">
-                <label for="time" class="form-label"><strong>Jam</strong></label>
-                <select name="time" id="time" class="form-select" required>
-                    <option disabled selected>Pilih Jam</option>
-                    @for ($hour = 8; $hour <= 20; $hour++)
-                        <option value="{{ sprintf('%02d:00', $hour) }}">{{ sprintf('%02d:00', $hour) }}</option>
-                    @endfor
-                </select>
+                {{-- Pilih Jam --}}
+                <div class="mb-3">
+                    <label for="time" class="form-label"><strong>Jam</strong></label>
+                    <select name="time" id="time" class="form-select" required>
+                        <option disabled selected>Pilih Jam</option>
+                        @for ($hour = 8; $hour <= 20; $hour++)
+                            <option value="{{ sprintf('%02d:00', $hour) }}">{{ sprintf('%02d:00', $hour) }}</option>
+                        @endfor
+                    </select>
+                </div>
             </div>
 
             {{-- Pickup Service --}}
@@ -94,13 +96,13 @@
             </div>
 
             {{-- Tombol --}}
-            <div class="d-flex justify-content-between">
-                <a href="/mybooking" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left-circle"></i> Batal
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Simpan Jadwal
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary me-3">
+                    <i class="bi bi-floppy"></i> Simpan Jadwal
                 </button>
+                <a href="/mybooking" class="btn btn-danger">
+                    <i class="bi bi-x-circle-fill"></i> Batal
+                </a>
             </div>
         </form>
     </div>

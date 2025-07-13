@@ -21,7 +21,7 @@
                 <label>Durasi (menit)</label>
                 <input type="number" name="duration" class="form-control">
             </div>
-            <button class="btn btn-primary">Simpan</button>
+            <button class="btn btn-primary"><i class="bi bi-floppy"></i> Simpan</button>
         </form>
     </div>
 @endsection

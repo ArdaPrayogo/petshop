@@ -18,28 +18,30 @@
         <form action="/mypet" method="POST">
             @csrf
 
-            <div class="mb-3">
+            <div class="mb-3 col-6">
                 <label>Nama Hewan</label>
                 <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
             </div>
 
-            <div class="mb-3">
-                <label>Spesies</label>
-                <input type="text" name="species" class="form-control" value="{{ old('species') }}" required>
+            <div class="d-flex">
+                <div class="mb-3 me-3 col-3">
+                    <label>Spesies</label>
+                    <input type="text" name="species" class="form-control" value="{{ old('species') }}" required>
+                </div>
+
+                <div class="mb-3 col-2">
+                    <label>Ras (Breed)</label>
+                    <input type="text" name="breed" class="form-control" value="{{ old('breed') }}">
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label>Ras (Breed)</label>
-                <input type="text" name="breed" class="form-control" value="{{ old('breed') }}">
-            </div>
-
-            <div class="mb-3">
+            <div class="mb-3 col-6">
                 <label>Usia (tahun)</label>
                 <input type="number" name="age" class="form-control" value="{{ old('age') }}">
             </div>
 
-            <button class="btn btn-primary">Simpan</button>
-            <a href="/mypet" class="btn btn-secondary">Batal</a>
+            <button class="btn btn-primary"><i class="bi bi-floppy"></i> Simpan</button>
+            <a href="/mypet" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Batal</a>
         </form>
     </div>
 @endsection

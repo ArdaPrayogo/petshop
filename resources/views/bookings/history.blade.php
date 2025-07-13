@@ -4,6 +4,8 @@
     <div class="container">
         <div class="mb-3 d-flex justify-content-between">
             <h2>Kalender Jadwal Layanan</h2>
+            <a href="{{ url()->previous() }}" class="btn btn-warning mb-3">Kembali</a>
+
             @guest
                 {{-- Guest: Belum login --}}
                 <a href="{{ route('login') }}" class="btn btn-outline-warning">

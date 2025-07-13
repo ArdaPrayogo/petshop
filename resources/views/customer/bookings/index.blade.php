@@ -3,8 +3,9 @@
 @section('container')
     <div class="container">
         <h2 class="mb-4">Jadwal Layanan Saya</h2>
-        <a href="/mybooking/create" class="btn btn-primary mb-3">Tambah Jadwal</a>
-        <a href="{{ route('mybooking.history') }}" class="btn btn-primary mb-3">Riwayat pemesanan</a>
+        <a href="/mybooking/create" class="btn btn-success mb-3"><i class="bi bi-calendar2-plus"></i> Tambah Jadwal</a>
+        <a href="{{ route('mybooking.history') }}" class="btn btn-dark mb-3"><i class="bi bi-clock-history"></i> Riwayat
+            pemesanan</a>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

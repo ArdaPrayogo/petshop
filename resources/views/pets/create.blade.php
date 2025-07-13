@@ -49,8 +49,8 @@
                 <input type="number" name="age" class="form-control" value="{{ old('age') }}">
             </div>
 
-            <button class="btn btn-primary">Simpan</button>
-            <a href="{{ route('pets.index') }}" class="btn btn-secondary">Batal</a>
+            <button class="btn btn-primary"><i class="bi bi-floppy"></i> Simpan</button>
+            <a href="{{ route('pets.index') }}" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Batal</a>
         </form>
     </div>
 @endsection

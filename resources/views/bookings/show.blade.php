@@ -4,7 +4,7 @@
     <div class="container">
         <h2>Detail Jadwal Layanan</h2>
 
-        <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
+        <a href="{{ url()->previous() }}" class="btn btn-warning mb-3">Kembali</a>
 
         <div class="card">
             <div class="card-body">

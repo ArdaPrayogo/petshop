@@ -20,7 +20,7 @@
     </div>
     <div class="container">
         <h2>Data Pelanggan</h2>
-        <a href="/pelanggan/create" class="btn btn-primary mb-3">Tambah User</a>
+        <a href="/pelanggan/create" class="btn btn-success mb-3"><i class="bi bi-person-add"></i> Tambah User</a>
         <table class="table table-bordered">
             <thead>
                 <tr>

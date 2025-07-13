@@ -3,7 +3,7 @@
 @section('container')
     <div class="container">
         <h2>Daftar Hewan Peliharaan</h2>
-        <a href="{{ route('pets.create') }}" class="btn btn-primary mb-3">Tambah Hewan</a>
+        <a href="{{ route('pets.create') }}" class="btn btn-success mb-3"><i class="bi bi-heart-fill"></i> Tambah Hewan</a>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

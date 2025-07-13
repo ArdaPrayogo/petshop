@@ -2,7 +2,7 @@
 
 @section('container')
     <div class="container">
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
+        <a href="{{ url()->previous() }}" class="btn btn-warning"><i class="bi bi-arrow-bar-left"></i> Kembali</a>
         <h2 class="mb-4">Riwayat Layanan Saya</h2>
 
         @if (session('success'))

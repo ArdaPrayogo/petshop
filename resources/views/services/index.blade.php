@@ -20,8 +20,8 @@
     </div>
     <div class="container">
         <h2>Daftar Layanan</h2>
-        <a href="/service/create" class="btn btn-primary mb-2">Tambah Layanan</a>
-        <table class="table">
+        <a href="/service/create" class="btn btn-success mb-2"><i class="bi bi-collection"></i> Tambah Layanan</a>
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Nama</th>

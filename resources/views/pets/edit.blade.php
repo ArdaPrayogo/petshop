@@ -53,8 +53,8 @@
                 <input type="number" name="age" class="form-control" value="{{ old('age', $pet->age) }}">
             </div>
 
-            <button class="btn btn-primary">Update</button>
-            <a href="{{ url()->previous() }}" class="btn btn-secondary mb-3">Kembali</a>
+            <button class="btn btn-primary"><i class="bi bi-floppy"></i> Update</button>
+            <a href="{{ url()->previous() }}" class="btn btn-danger"><i class="bi bi-x-circle-fill"></i> Kembali</a>
 
         </form>
     </div>

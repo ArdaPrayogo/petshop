@@ -65,7 +65,7 @@
                 </div>
 
                 <button class="btn btn-success">Bayar</button>
-                <a href="{{ route('bills.index') }}" class="btn btn-secondary">Batal</a>
+                <a href="{{ route('bills.index') }}" class="btn btn-danger">Batal</a>
             </form>
         @else
             <div class="alert alert-success">Tagihan ini sudah dibayar.</div>

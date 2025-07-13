@@ -1,0 +1,31 @@
+body {
+  font-family: "MuseoModerno", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Overlay background pattern dengan opacity */
+body::before {
+  content: "";
+  position: fixed; /* Gunakan fixed agar ikut scroll */
+  inset: 0;
+  background-image: url('/img/pattern.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: 0.3; /* Nilai opacity bisa disesuaikan */
+  z-index: 0;
+  pointer-events: none; /* Supaya tidak mengganggu klik */
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+}

@@ -3,25 +3,28 @@
 @section('container')
     <div class="container">
         <div class="mb-3 d-flex justify-content-between">
-            <h2>Riwayat Jadwal Layanan</h2>
+            <h2 class="p-0">Riwayat Jadwal Layanan</h2>
             @guest
                 {{-- Guest: Belum login --}}
-                <a href="{{ route('login') }}" class="btn btn-outline-warning">
-                    Pesan layanan
+                <a href="{{ route('login') }}" class="btn btn-warning align-content-center">
+                    <i class="bi bi-receipt-cutoff"></i> Pesan layanan
                 </a>
             @else
                 @if (auth()->user()->role === 'customer')
                     {{-- Customer: Tampilkan tombol ke form booking --}}
-                    <a href="/mybooking/create" class="btn btn-sm btn-warning">
-                        Pesan layanan
+                    <a href="/mybooking/create" class="btn btn-warning align-content-center">
+                        <i class="bi bi-receipt-cutoff"></i> Pesan layanan
                     </a>
                 @endif
                 {{-- Admin: Tidak ditampilkan --}}
             @endguest
 
             @can('admin')
-                <a href="{{ route('bookings.create') }}" class="btn btn-primary mb-3">Tambah Jadwal</a>
-                <a href="/riwayat" class="btn btn-primary mb-3">Riwayat Jadwal</a>
+                <div>
+                    <a href="{{ route('bookings.create') }}" class="btn btn-success mb-3"><i class="bi bi-calendar2-plus"></i>
+                        Tambah Jadwal</a>
+                    <a href="/riwayat" class="btn btn-dark mb-3"><i class="bi bi-clock-history"></i> Riwayat Jadwal</a>
+                </div>
             @endcan
         </div>
 

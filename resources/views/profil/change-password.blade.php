@@ -36,7 +36,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Ubah Password</button>
-            <a href="/profile" class="btn btn-secondary">Kembali</a>
+            <a href="/profile" class="btn btn-danger">Kembali</a>
         </form>
     </div>
 @endsection
