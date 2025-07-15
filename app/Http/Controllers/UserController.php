@@ -45,16 +45,20 @@ class UserController extends Controller
         return view('users.show', compact('user'));
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
+        $user = User::findOrFail($id);
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+
+    public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
-            'email'   => 'required|email|unique:users,email,' . $user->id,
+            'email'   => 'required|email|unique:users,email,' . $id,
             'role'    => 'required|in:admin,customer',
             'phone'   => 'nullable|string|max:20',
             'address' => 'nullable|string',
@@ -65,8 +69,10 @@ class UserController extends Controller
         }
 
         $user->update($validated);
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
+
+        return redirect('/pelanggan')->with('success', 'User berhasil diperbarui.');
     }
+
 
     public function destroy(User $user)
     {

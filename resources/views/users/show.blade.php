@@ -13,7 +13,7 @@
                 <p class="card-text"><strong>Alamat:</strong> {{ $user->address ?? '-' }}</p>
                 {{-- <p class="card-text"><strong>Tanggal Daftar:</strong> {{ $user->created_at->format('d M Y') }}</p> --}}
 
-                <a href="/pelanggan/{{ $user->id }}" class="btn btn-warning">Edit</a>
+                <a href="/pelanggan/{{ $user->id }}/edit" class="btn btn-warning">Edit</a>
                 <a href="/pelanggan" class="btn btn-secondary">Kembali</a>
             </div>
         </div>
