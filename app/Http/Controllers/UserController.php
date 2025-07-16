@@ -24,20 +24,38 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role'     => 'required|in:admin,customer',
+            'email'    => 'nullable|email',
+            'password' => 'nullable|string|min:6|confirmed',
             'phone'    => 'nullable|string|max:20',
             'address'  => 'nullable|string',
         ]);
 
-        $validated['password'] = bcrypt($validated['password']);
-        $validated['remember_token'] = Str::random(10); // generate 60 karakter token
+        // Role fix customer
+        $validated['role'] = 'customer';
 
+        // Dummy email jika kosong
+        if (empty($validated['email'])) {
+            do {
+                $dummyEmail = 'pelanggan' . rand(1000, 9999) . '@gmail.com';
+            } while (User::where('email', $dummyEmail)->exists());
+
+            $validated['email'] = $dummyEmail;
+        }
+
+        // Dummy password jika kosong
+        if (empty($validated['password'])) {
+            $validated['password'] = bcrypt('password123'); // atau bisa pakai Str::random(8)
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
+
+        $validated['remember_token'] = Str::random(10);
 
         User::create($validated);
-        return redirect('/pelanggan')->with('success', 'User berhasil ditambahkan.');
+
+        return redirect('/pelanggan')->with('success', 'Pelanggan berhasil ditambahkan.');
     }
+
 
     public function show($id)
     {
@@ -74,9 +92,11 @@ class UserController extends Controller
     }
 
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+
+        return redirect('/pelanggan')->with('success', 'User berhasil dihapus.');
     }
 }

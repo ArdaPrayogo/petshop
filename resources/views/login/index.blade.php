@@ -144,7 +144,7 @@
                             <input type="email" name="email"
                                 class="form-control @error('email') is-invalid @enderror" id="email"
                                 placeholder="name@example.com" value="{{ old('email') }}" required />
-                            <label for="email" class="text-black">Alamat Email</label>
+                            <label for="email" class="text-black">Email</label>
                             @error('email')
                                 <div class="invalid-feedback text-start">
                                     {{ $message }}
