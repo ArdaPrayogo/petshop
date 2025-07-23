@@ -78,3 +78,4 @@ Route::get('/mybill', [BillController::class, 'indexcustomer']);
 
 // PDF
 Route::get('/transaksi-pdf/{id}', [PdfController::class, 'generate'])->name('laporan.pdf');
+Route::get('/laporan-bulanan', [PdfController::class, 'monthlyReport']);

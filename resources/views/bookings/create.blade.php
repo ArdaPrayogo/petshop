@@ -23,7 +23,9 @@
                 <select name="pet_id" id="pet_id" class="form-select" required>
                     <option disabled selected>Pilih Hewan Anda</option>
                     @foreach ($pets as $pet)
-                        <option value="{{ $pet->id }}">{{ $pet->name }} ({{ $pet->species }})</option>
+                        <option value="{{ $pet->id }}">{{ $pet->name }}
+                            (Pemilik : {{ $pet->user->name }})
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -54,33 +56,16 @@
                 </div>
             </div>
 
-            <div class="d-flex">
-                {{-- Pilih Hari --}}
-                <div class="mb-3 me-3">
-                    <label for="day" class="form-label"><strong>Hari</strong></label>
-                    <select name="day" id="day" class="form-select" required>
-                        <option disabled selected>Pilih Hari</option>
-                        @foreach ($days as $day)
-                            <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Pilih Jam --}}
-                <div class="mb-3">
-                    <label for="time" class="form-label"><strong>Jam</strong></label>
-                    <select name="time" id="time" class="form-select" required>
-                        <option disabled selected>Pilih Jam</option>
-                        @for ($hour = 8; $hour <= 20; $hour++)
-                            <option value="{{ sprintf('%02d:00', $hour) }}">{{ sprintf('%02d:00', $hour) }}</option>
-                        @endfor
-                    </select>
-                </div>
+            {{-- Pilih Tanggal & Waktu --}}
+            <div class="mb-4">
+                <label for="scheduled_at" class="form-label"><strong>Tanggal & Jam</strong></label>
+                <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control" required>
             </div>
 
             {{-- Pickup Service --}}
             <div class="mb-4">
                 <label class="form-label"><strong>Layanan Antar</strong></label>
+
                 <div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="pickup_service" id="pickup_yes" value="1"

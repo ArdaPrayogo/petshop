@@ -4,18 +4,29 @@
     <div class="container">
         <h2 class="mb-4">Tambah Jadwal Layanan</h2>
 
+        {{-- Alert sukses --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        {{-- Alert error --}}
         @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         <form action="{{ route('bookings.store') }}" method="POST">
             @csrf
+
             {{-- Pilih Hewan --}}
             <div class="mb-4">
                 <label for="pet_id" class="form-label"><strong>Hewan Peliharaan</strong></label>
@@ -47,7 +58,7 @@
                                         {{ number_format($service->price, 0, ',', '.') }}</p>
                                     <p class="mb-0"><i class="bi bi-clock"></i> {{ $service->duration }} menit</p>
                                     <p class="mb-0"><i class="bi bi-person"></i> {{ $service->staff }}
-                                        <strong>( staff )</strong>
+                                        <strong>(staff)</strong>
                                     </p>
                                 </div>
                             </div>
@@ -56,9 +67,20 @@
                 </div>
             </div>
 
+            {{-- Jadwal --}}
+            <div class="mb-4">
+                <label for="scheduled_at" class="form-label"><strong>Tanggal & Jam</strong></label>
+                <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control" required>
+            </div>
+
             {{-- Pickup Service --}}
             <div class="mb-4">
                 <label class="form-label"><strong>Layanan Antar</strong></label>
+                <p class="small text-muted">*Mohon konfirmasi ke <a
+                        href="https://wa.me/62895323709640?text=Halo%20admin%2C%20saya%20ingin%20menggunakan%20layanan%20antar%20dari%20Aura%20Petshop.%20Mohon%20dikonfirmasi%2C%20terima%20kasih."
+                        target="_blank" class=" text-success"></i>Admin</a> jika ingin menggunakan layanan antar.
+                </p>
+
                 <div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="pickup_service" id="pickup_yes" value="1"
@@ -73,30 +95,7 @@
                 </div>
             </div>
 
-            <div class="d-flex">
-                {{-- Pilih Hari --}}
-                <div class="mb-3 me-3">
-                    <label for="day" class="form-label"><strong>Hari</strong></label>
-                    <select name="day" id="day" class="form-select" required>
-                        <option disabled selected>Pilih Hari</option>
-                        @foreach ($days as $day)
-                            <option value="{{ $day['label'] }}">{{ $day['display'] }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Pilih Jam --}}
-                <div class="mb-3">
-                    <label for="time" class="form-label"><strong>Jam</strong></label>
-                    <select name="time" id="time" class="form-select" required>
-                        <option disabled selected>Pilih Jam</option>
-                        @for ($hour = 8; $hour <= 20; $hour++)
-                            <option value="{{ sprintf('%02d:00', $hour) }}">{{ sprintf('%02d:00', $hour) }}</option>
-                        @endfor
-                    </select>
-                </div>
-            </div>
-
+            {{-- Tombol --}}
             <div class="d-flex">
                 <button type="submit" class="btn btn-primary me-2">
                     <i class="bi bi-save"></i> Simpan Jadwal

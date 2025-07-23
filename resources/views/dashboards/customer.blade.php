@@ -5,7 +5,7 @@
         {{-- Header --}}
         <div class="text-center mb-5">
             <h2 class="fw-bold">🐾 Selamat Datang di <span class="text-primary">Aura Petshop</span>!</h2>
-            <p class="fs-5 text-muted">Perawatan terbaik untuk sahabat berbulu Anda sejak <strong>2025</strong></p>
+            <p class="fs-5 text-muted">Perawatan terbaik untuk sahabat berbulu Anda sejak <strong>2020</strong></p>
         </div>
 
         {{-- Gambar & Tentang --}}
@@ -18,7 +18,7 @@
                 <h4 class="fw-bold mb-3">Tentang Kami</h4>
                 <p>
                     <strong>Aura Petshop</strong> adalah pusat layanan kesehatan dan perawatan hewan yang telah dipercaya
-                    sejak 2025.
+                    sejak 2020.
                     Kami menghadirkan perawatan terbaik dengan tenaga profesional dan kasih sayang terhadap hewan peliharaan
                     Anda.
                 </p>

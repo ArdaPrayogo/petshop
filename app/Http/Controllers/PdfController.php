@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Bill;
 use App\Models\Booking;
 use Illuminate\Http\Request;
@@ -23,5 +24,28 @@ class PdfController extends Controller
 
         // Untuk download otomatis:
         // return $pdf->download('detail-pembayaran-' . $bill->id . '.pdf');
+    }
+
+    public function monthlyReport(Request $request)
+    {
+        // Ambil bulan dan tahun dari input
+        $monthInput = $request->input('month'); // format: yyyy-mm
+        if (!$monthInput) {
+            return redirect()->back()->with('error', 'Bulan wajib dipilih.');
+        }
+
+        [$year, $month] = explode('-', $monthInput);
+
+        $bills = Bill::with(['booking.pet.user', 'booking.services'])
+            ->whereMonth('bill_date', $month)
+            ->whereYear('bill_date', $year)
+            ->get();
+
+        $pdf = PDF::loadView('bills.report', [
+            'bills' => $bills,
+            'selectedMonth' => Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y'),
+        ]);
+
+        return $pdf->stream("laporan_tagihan_{$month}_{$year}.pdf");
     }
 }

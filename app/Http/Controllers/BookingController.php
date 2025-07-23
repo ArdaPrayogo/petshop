@@ -11,43 +11,51 @@ class BookingController extends Controller
 {
     public function index()
     {
+        // Ambil semua booking yang punya service
         $bookingIds = DB::table('booking_service')
             ->select('booking_id')
             ->groupBy('booking_id')
             ->pluck('booking_id');
 
+        // Ambil booking aktif (belum selesai/dibatalkan)
         $bookings = Booking::with(['pet.user'])
             ->whereIn('id', $bookingIds)
             ->whereNotIn('status', ['completed', 'cancelled'])
             ->orderBy('schedule_time')
             ->get();
 
+        // Kelompokkan berdasarkan tanggal lengkap dalam bahasa Indonesia
         $grouped = $bookings->groupBy(function ($booking) {
-            return Carbon::parse($booking->schedule_time)->locale('id')->isoFormat('dddd, D MMMM Y');
+            return Carbon::parse($booking->schedule_time)->translatedFormat('l, d F Y');
         });
 
         return view('bookings.index', compact('grouped'));
     }
 
+
     public function indexhistoryadmin()
     {
+        // Ambil semua booking yang memiliki layanan
         $bookingIds = DB::table('booking_service')
             ->select('booking_id')
             ->groupBy('booking_id')
             ->pluck('booking_id');
 
+        // Ambil booking yang statusnya sudah selesai atau dibatalkan
         $bookings = Booking::with(['pet.user'])
             ->whereIn('id', $bookingIds)
-            ->whereIn('status', ['completed', 'cancelled']) // ✅ hanya completed & cancelled
+            ->whereIn('status', ['completed', 'cancelled'])
             ->orderBy('schedule_time')
             ->get();
 
+        // Kelompokkan berdasarkan tanggal lengkap (dalam Bahasa Indonesia)
         $grouped = $bookings->groupBy(function ($booking) {
-            return Carbon::parse($booking->schedule_time)->locale('id')->isoFormat('dddd, D MMMM Y');
+            return Carbon::parse($booking->schedule_time)->translatedFormat('l, d F Y');
         });
 
         return view('bookings.history', compact('grouped'));
     }
+
 
     public function indexcustomer()
     {
@@ -87,29 +95,13 @@ class BookingController extends Controller
         return view('customer.bookings.history', compact('bookings'));
     }
 
+
     public function create()
     {
         $pets = Pet::with('user')->get();
         $services = Service::all();
-        $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-        $carbonDays = [1, 2, 3, 4, 5, 6, 0];
 
-        $now = Carbon::now();
-        $days = [];
-
-        foreach ($dayNames as $i => $dayName) {
-            $targetDate = Carbon::now()->next($carbonDays[$i]);
-            if ($targetDate->dayOfWeek === $now->dayOfWeek) {
-                $targetDate = $now->copy();
-            }
-            $days[] = [
-                'label' => $dayName,
-                'date' => $targetDate->format('Y-m-d'),
-                'display' => "$dayName ({$targetDate->format('d M Y')})"
-            ];
-        }
-
-        return view('bookings.create', compact('pets', 'services', 'days'));
+        return view('bookings.create', compact('pets', 'services'));
     }
 
     public function createcustomer()
@@ -117,25 +109,8 @@ class BookingController extends Controller
         $userId = Auth::id();
         $pets = Pet::where('user_id', $userId)->get();
         $services = Service::all();
-        $dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-        $carbonDays = [1, 2, 3, 4, 5, 6, 0];
 
-        $now = Carbon::now();
-        $days = [];
-
-        foreach ($dayNames as $i => $dayName) {
-            $targetDate = Carbon::now()->next($carbonDays[$i]);
-            if ($targetDate->dayOfWeek === $now->dayOfWeek) {
-                $targetDate = $now->copy();
-            }
-            $days[] = [
-                'label' => $dayName,
-                'date' => $targetDate->format('Y-m-d'),
-                'display' => "$dayName ({$targetDate->format('d M Y')})"
-            ];
-        }
-
-        return view('customer.bookings.create', compact('pets', 'services', 'days'));
+        return view('customer.bookings.create', compact('pets', 'services'));
     }
 
     public function store(Request $request)
@@ -144,29 +119,18 @@ class BookingController extends Controller
             'pet_id' => 'required|exists:pets,id',
             'services' => 'required|array|min:1',
             'services.*' => 'exists:services,id',
-            'day' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'time' => 'required|date_format:H:i',
+            'scheduled_at' => 'required|date|after:now',
             'pickup_service' => 'required|boolean',
         ]);
 
-        $dayMap = ['Minggu' => 0, 'Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6];
-        $today = now();
-        $targetDay = $dayMap[$validated['day']];
-
-        $scheduleDate = now()->next($targetDay);
-        if ($today->dayOfWeek === $targetDay && $validated['time'] > $today->format('H:i')) {
-            $scheduleDate = $today;
-        }
-
-        $schedule_time = $scheduleDate->format('Y-m-d') . ' ' . $validated['time'];
-
-        if (Booking::where('schedule_time', $schedule_time)->exists()) {
-            return back()->withErrors(['time' => 'Waktu jadwal ini sudah terpakai.'])->withInput();
+        // Pastikan waktu belum dipakai
+        if (Booking::where('schedule_time', $validated['scheduled_at'])->exists()) {
+            return back()->withErrors(['scheduled_at' => 'Waktu jadwal ini sudah terpakai.'])->withInput();
         }
 
         $booking = Booking::create([
             'pet_id' => $validated['pet_id'],
-            'schedule_time' => $schedule_time,
+            'schedule_time' => $validated['scheduled_at'],
             'status' => 'pending',
             'pickup_service' => $validated['pickup_service'],
         ]);
@@ -180,6 +144,8 @@ class BookingController extends Controller
             return redirect()->route('bookings.index')->with('success', 'Jadwal berhasil disimpan.');
         }
     }
+
+
 
     public function show(Booking $booking)
     {

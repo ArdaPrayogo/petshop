@@ -1,5 +1,5 @@
 <div class="card shadow-sm h-100">
-    <div class="card-header bg-warning-subtle text-black">
+    <div class="card-header bg-dark-subtle text-black">
         <h5 class="mb-0">{{ $day }}</h5>
     </div>
 

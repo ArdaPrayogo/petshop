@@ -36,8 +36,9 @@
                             </p>
 
 
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info btn-sm">Detail</a>
+                            <div class="d-flex">
+                                <a href="{{ route('bookings.show', $booking->id) }}"
+                                    class="btn btn-info btn-sm me-2">Detail</a>
                                 <a href="{{ route('bookings.edit', $booking->id) }}" class="btn btn-warning btn-sm">Edit</a>
                             </div>
                         </div>

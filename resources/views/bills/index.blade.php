@@ -2,7 +2,22 @@
 
 @section('container')
     <div class="container">
-        <h2>Daftar Tagihan</h2>
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <h2>Daftar Tagihan</h2>
+            <div>
+                <form action="/laporan-bulanan" method="GET" class="row g-3 mb-3">
+                    <div class="col-auto">
+                        <input type="month" name="month" class="form-control" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-outline-warning"> <i class="bi bi-file-earmark-ruled"></i>
+                            Cetak Laporan</button>
+                    </div>
+                </form>
+                <p class="small text-muted p-0">*pilih bulan untuk cetak laporan</p>
+            </div>
+
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
