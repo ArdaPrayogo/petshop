@@ -19,7 +19,22 @@
                                 <strong>Waktu:</strong>
                                 {{ \Carbon\Carbon::parse($booking->schedule_time)->translatedFormat('d M Y H:i') }}
                             </p>
-                            <p class="card-text mb-2"><strong>Status:</strong> {{ ucfirst($booking->status) }}</p>
+                            <p class="card-text mb-2">
+                                <strong>Status:</strong>
+                                @php
+                                    $statusColor = match ($booking->status) {
+                                        'pending' => 'warning', // abu-abu
+                                        'confirmed' => 'primary', // biru
+                                        'completed' => 'success', // hijau
+                                        default => 'dark',
+                                    };
+                                @endphp
+
+                                <span class="badge bg-{{ $statusColor }}">
+                                    {{ ucfirst($booking->status) }}
+                                </span>
+                            </p>
+
 
                             <div class="d-flex justify-content-between">
                                 <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-info btn-sm">Detail</a>

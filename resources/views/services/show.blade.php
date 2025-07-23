@@ -20,6 +20,10 @@
                     {{ $service->duration ? $service->duration . ' menit' : '-' }}
                 </p>
 
+                <p class="card-text"><strong>Staff:</strong><br>
+                    {{ $service->staff ?? '-' }}
+                </p>
+
                 <a href="/service/{{ $service->id }}/edit" class="btn btn-warning">Edit</a>
                 <a href="/service" class="btn btn-secondary">Kembali</a>
             </div>

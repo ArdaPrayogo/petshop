@@ -12,6 +12,7 @@ class ServiceController extends Controller
         $services = Service::all();
         return view('services.index', compact('services'));
     }
+
     public function indexcustomer()
     {
         $services = Service::all();
@@ -29,11 +30,12 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'price' => 'required|numeric|min:0',
-            'duration' => 'nullable|integer|min:1', // durasi dalam menit
+            'duration' => 'nullable|integer|min:1',
+            'staff' => 'nullable|string|max:255',
         ]);
 
-
         Service::create($request->all());
+
         return redirect('/service')->with('success', 'Layanan berhasil ditambahkan!');
     }
 
@@ -53,11 +55,12 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'price' => 'required|numeric|min:0',
-            'duration' => 'nullable|integer|min:1', // durasi dalam menit
+            'duration' => 'nullable|integer|min:1',
+            'staff' => 'nullable|string|max:255',
         ]);
 
-
         $service->update($request->all());
+
         return redirect('/service')->with('success', 'Layanan berhasil diperbarui!');
     }
 

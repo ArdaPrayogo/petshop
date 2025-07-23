@@ -46,6 +46,9 @@
                                     <p class="mb-1"><i class="bi bi-cash"></i> Rp
                                         {{ number_format($service->price, 0, ',', '.') }}</p>
                                     <p class="mb-0"><i class="bi bi-clock"></i> {{ $service->duration }} menit</p>
+                                    <p class="mb-0"><i class="bi bi-person"></i> {{ $service->staff }}
+                                        <strong>( staff )</strong>
+                                    </p>
                                 </div>
                             </div>
                         </div>

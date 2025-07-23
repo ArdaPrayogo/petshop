@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('duration')->nullable(); // durasi dalam menit
+            $table->string('staff')->nullable();
             $table->timestamps();
         });
     }

@@ -32,6 +32,7 @@
                             <hr>
                             <h6 class="card-text fw-bold mb-3">Deskripsi:</h6>
                             <p class="card-text">{{ $service->description }}:</p>
+                            <p class="card-text"><strong>Staff: </strong> {{ $service->staff }}</p>
                             <p class="card-text"><strong>Harga:</strong> Rp
                                 {{ number_format($service->price, 0, ',', '.') }}
                             </p>

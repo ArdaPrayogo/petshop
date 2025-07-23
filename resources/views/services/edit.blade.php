@@ -43,6 +43,11 @@
                     value="{{ old('duration', $service->duration) }}">
             </div>
 
+            <div class="mb-3">
+                <label>Staff</label>
+                <input type="text" name="staff" class="form-control" value="{{ old('staff', $service->staff) }}">
+            </div>
+
             <button type="submit" class="btn btn-primary">Update</button>
             <a href="/service" class="btn btn-secondary">Batal</a>
         </form>

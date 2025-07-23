@@ -54,7 +54,8 @@
     <p><strong>🛠️ Layanan:</strong></p>
     <ul>
         @foreach ($bill->booking->services as $service)
-            <li>{{ $service->name }} - Rp {{ number_format($service->price, 0, ',', '.') }}</li>
+            <li>{{ $service->name }} - Rp {{ number_format($service->price, 0, ',', '.') }} - {{ $service->staff }}
+                <strong>(Staff)</strong></li>
         @endforeach
     </ul>
 
